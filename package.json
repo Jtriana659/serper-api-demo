@@ -1,7 +1,7 @@
 {
   "name": "serper-api-demo",
   "version": "1.0.0",
-  "description": "",
+  "description": "Buscador en Node.js usando la API de Serper.dev",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
