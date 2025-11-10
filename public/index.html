@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buscador con Serper API</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔍 Buscador con Serper API</h1>
+        <form id="search-form">
+            <input type="text" id="query" placeholder="Escribe algo para buscar..." required />
+            <button type="submit">Buscar</button>
+        </form>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('search-form');
+        const resultsDiv = document.getElementById('results');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const query = document.getElementById('query').value;
+            resultsDiv.innerHTML = '<p>🔎 Buscando...</p>';
+
+            try {
+                const res = await fetch('/api/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query }),
+                });
+
+                const data = await res.json();
+
+                if (data.organic && data.organic.length > 0) {
+                    resultsDiv.innerHTML = data.organic
+                        .map(
+                            (item) => `
+              <div class="result">
+                <h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
+                <p>${item.snippet}</p>
+              </div>`
+                        )
+                        .join('');
+                } else {
+                    resultsDiv.innerHTML = '<p>No se encontraron resultados.</p>';
+                }
+            } catch (error) {
+                console.error(error);
+                resultsDiv.innerHTML = '<p>Error al realizar la búsqueda.</p>';
+            }
+        });
+    </script>
+</body>
+
+</html>
